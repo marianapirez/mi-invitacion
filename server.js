@@ -1,13 +1,15 @@
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Usa el puerto proporcionado por Railway o 3000 como predeterminado
 
 // Habilitar CORS para permitir conexiones desde tu página web
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname))); // Sirve archivos estáticos desde la carpeta raíz del proyecto
 
 const CLAVE_ADMIN = "Luciana15";  // Cambia esta contraseña si lo deseas
 const DATA_FILE = "confirmaciones.json";
@@ -51,7 +53,13 @@ app.post('/ver-confirmaciones', (req, res) => {
     res.json(cargarConfirmaciones());
 });
 
+// Ruta principal para servir el archivo HTML
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); // Cambia 'index.html' por el nombre de tu archivo HTML principal
+});
+
 // Iniciar el servidor
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
